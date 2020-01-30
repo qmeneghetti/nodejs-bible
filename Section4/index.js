@@ -26,40 +26,40 @@ const authorsDb = [
     }
 ];
 
-function getBookById(id, callback){
-    const book = booksDb.find((book) => book.id === id);
-    if(!book){
-        const error = new Error();
-        error.message = 'Book not found!';
-        return callback(error);
-    }
-
-    callback(null, book);
-}
-
-function getAuthorById(id, callback){
-    const author = authorsDb.find((author) => author.id === id);
-    if(!author){
-        const error = new Error();
-        error.message = 'Author not found!';
-        return callback(error);
-    }
-
-    callback(null, author);
-}
-
-getBookById(1, (err, book) => {
-    if(err){
-        return console.log(err.message);
-    }
-
-    getAuthorById(book.authorId, (err, author) => {
-        if(err){
-            return console.log(err.message);
+function getBookById(id){
+    return new Promise((resolve, reject) => {
+        const book = booksDb.find((book) => book.id === id);
+        if(!book){
+            const error = new Error();
+            error.message = 'Book not found!';
+            reject(error);
         }
 
-        return console.log(`This book ${book.title} was written by ${author.name}.`)
+        resolve(book);
     });
+}
 
-    return console.log(book);
+function getAuthorById(id){
+    return new Promise((resolve, reject) => {
+        const author = authorsDb.find((author) => author.id === id);
+        if(!author){
+            const error = new Error();
+            error.message = 'Author not found!';
+            reject(error);
+        }
+
+        resolve(author);
+    });
+}
+
+
+getAuthorById(1)
+.then(book => {
+    return getAuthorById(book.id);
 })
+.then(author => {
+    console.log(author);
+})
+.catch(error => {
+    console.log(error.message);
+});
