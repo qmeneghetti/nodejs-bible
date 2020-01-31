@@ -43,7 +43,7 @@ async function getAuthorById(id){
             error.message = 'Author not found!';
             throw error;       
         }
-    return book;   
+    return author;   
 }
 
 async function main(){
