@@ -26,40 +26,35 @@ const authorsDb = [
     }
 ];
 
-function getBookById(id){
-    return new Promise((resolve, reject) => {
-        const book = booksDb.find((book) => book.id === id);
-        if(!book){
-            const error = new Error();
-            error.message = 'Book not found!';
-            reject(error);
-        }
-
-        resolve(book);
-    });
+async function getBookById(id){
+    const book = booksDb.find((book) => book.id === id);
+    if(!book){
+        const error = new Error();
+        error.message = 'Book not found!';
+        throw error;
+    }
+    return book;
 }
 
-function getAuthorById(id){
-    return new Promise((resolve, reject) => {
-        const author = authorsDb.find((author) => author.id === id);
+async function getAuthorById(id){
+    const author = authorsDb.find((author) => author.id === id);
         if(!author){
             const error = new Error();
             error.message = 'Author not found!';
-            reject(error);
+            throw error;       
         }
-
-        resolve(author);
-    });
+    return book;   
 }
 
+async function main(){
+    try{
+        const book = await getBookById(1);
+        const author = await getAuthorById(book.authorId);
+    
+        console.log(`This book ${book.title} was writter by ${author.name}`);
+    }catch(ex){
+        console.log(ex.message);
+    }
+}
 
-getAuthorById(1)
-.then(book => {
-    return getAuthorById(book.id);
-})
-.then(author => {
-    console.log(author);
-})
-.catch(error => {
-    console.log(error.message);
-});
+main();
